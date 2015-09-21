@@ -1,10 +1,23 @@
 Package: CMA
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1
+Title: An R package for correlated mutation analysis at both codon and amino acid levels.
+Version: 0.1.0
 Date: 2015-09-20
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Etai Jacob
+Maintainer: Who to complain to <etai.jacob@gmail.com>
+Description: An R package for correlated mutation analysis at both codon and amino acid levels. The package consists several different algorithms to perform correlated mutation analysis.
+License: GPL-2
 LazyData: TRUE
+Authors@R: person("Etai", "Jacob", email = "etai.jacob@gmail.com",
+  role = c("aut", "cre"))
+URL: https://github.com/etaijacob/CMA
+BugReports: https://github.com/etaijacob/CMA/issues
+Imports:
+  seqinr,
+  Rcpp
+LinkingTo: Rcpp
+Collate:
+  DCA.R
+  CMA.R
+  aacodonDCA.R
+  RcppExports.R
