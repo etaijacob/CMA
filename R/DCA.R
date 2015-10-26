@@ -79,7 +79,7 @@ return_alignment <- function(inputfile="Y://PFAM2/data/sth/seed/PF00001_v27_seed
                              seqid = 1, nuc = F, fileType = c("fasta", "sth"), doUnique=T) {
   # reads alignment from inputfile, removes inserts and converts into numbers
   cat("return_alignment..\n")
-  require(seqinr)
+  #require(seqinr)
   attributes(seqid) <- list(type="Reference sequence index")
   if(fileType == "fasta") {
     msa <- read.alignment(inputfile, format = "fasta", forceToLower = F)
