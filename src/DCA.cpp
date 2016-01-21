@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+//Copyright (C) 2015 Etai Jacob, etai.jacob@gmail.com
 
 using namespace Rcpp;
 
