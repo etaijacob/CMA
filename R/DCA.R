@@ -1,5 +1,5 @@
 #DCA.R
-
+#Copyright (C) 2015 Etai Jacob, etai.jacob@gmail.com
 
 #' Direct Coupling Analysis (DCA) for amino acid and codon sequences
 
