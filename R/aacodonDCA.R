@@ -1,5 +1,5 @@
 #aacodonDCA.R
-
+#Copyright (C) 2015 Etai Jacob, etai.jacob@gmail.com
 
 #' @export
 codonDCA.fasta <- function(aa_fasta_file = "data/PF00014_full.fasta.test",
