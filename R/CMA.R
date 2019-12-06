@@ -1,7 +1,7 @@
 #CMA.R
 #Copyright (C) 2015 Etai Jacob, etai.jacob@gmail.com
 
-#' CMA: An R package for correlated mutation analysis both at codon and amino acid levels.
+#' CMA: An R package for correlated mutation analysis using both codon and amino acid levels.
 #'
 #' @details
 #' CMA provides several methods for calculating correlated mutations analysis.

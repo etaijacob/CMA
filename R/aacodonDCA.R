@@ -56,7 +56,7 @@ aaDCA.sth <- function(sth_file = "data/PF00074_seed.sth", seqname = 1) {
 aacodonDCA <- function(sth_file = "data/PF00074_seed.sth",
                        aa_file = "data/PF00074_seed.sth.aligndprots",
                        codon_file = "data/PF00074_seed.sth.tranalignout",
-                       seqnameorindex=1, pseudocount_weight = 0.5, theta = 0.2, idxs = NULL) {
+                       seqnameorindex = 1, pseudocount_weight = 0.5, theta = 0.2, idxs = NULL) {
   # 1. reads an sth file for a ref seq column indices
   # 2. dca aa file
   # 3. dca codon file

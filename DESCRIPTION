@@ -1,11 +1,11 @@
 Package: CMA
 Type: Package
-Title: An R package for correlated mutation analysis at both codon and amino acid levels.
+Title: An R package for correlated mutation analysis using both codon and amino acid levels.
 Version: 0.1.0
 Date: 2015-09-20
 Author: Etai Jacob
 Maintainer: Who to complain to <etai.jacob@gmail.com>
-Description: An R package for correlated mutation analysis at both codon and amino acid levels. The package consists several different algorithms to perform correlated mutation analysis.
+Description: An R package for correlated mutation analysis using both codon and amino acid levels. The package consists several different algorithms to perform correlated mutation analysis.
 License: GPL-2
 LazyData: TRUE
 Authors@R: person("Etai", "Jacob", email = "etai.jacob@gmail.com",
@@ -21,3 +21,4 @@ Collate:
   CMA.R
   aacodonDCA.R
   RcppExports.R
+RoxygenNote: 6.1.1

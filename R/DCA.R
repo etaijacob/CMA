@@ -1,8 +1,8 @@
 #DCA.R
 #Copyright (C) 2015 Etai Jacob, etai.jacob@gmail.com
-
-#' Direct Coupling Analysis (DCA) for amino acid and codon sequences
-
+#'
+#'   Direct Coupling Analysis (DCA) for amino acid and codon sequences
+#'
 #'   @param  inputfile file containing the FASTA alignment
 #'   @param pseudocount_weight - relative weight of pseudo count
 #'   @param theta threshold for sequence id in reweighting
@@ -28,7 +28,7 @@
 #' @examples
 #' cma.res <- dca(codon_file_name, seqid = 1, nuc = T, fileType = "fasta")
 #'
-#'  SOME RELEVANT VARIABLES:
+#'  SOME RELEVANT VARIABLES RETURNED:
 #'   N        number of residues in each sequence (no insert)
 #'   M        number of sequences in the alignment
 #'   Meff     effective number of sequences after reweighting
@@ -43,7 +43,7 @@
 #########################################################################
 #' @export
 dca <- function(inputfile, pseudocount_weight = 0.5, theta = 0.2,
-                seqid = 1, nuc = F, fileType="fasta") {
+                seqid = 1, nuc = F, fileType="fasta", outputfile = NULL) {
 
   cat("return_alignment.\n")
   print(system.time(msa <- return_alignment(inputfile, seqid = seqid, nuc = nuc, fileType = fileType)))
@@ -56,10 +56,10 @@ dca <- function(inputfile, pseudocount_weight = 0.5, theta = 0.2,
   print(system.time(C <- Compute_C(pc$Pij, pc$Pi, msa$N, msa$q)))
   cat("InvC.\n")
   #print(system.time(invC <- solve(C)))
-  #inverse via the Choleski decomposition
+  #inverse via the Choleski decomposition performs faster th
   print(system.time(invC <- chol2inv(chol(C))))
   cat("Compute_Results.\n")
-  print(system.time(results <- Compute_Results(pc$Pij, pc$Pi, tfs$Pij_true, tfs$Pi_true, invC, msa$N, msa$q, outputfile)))
+  print(system.time(results <- Compute_Results(pc$Pij, pc$Pi, tfs$Pij_true, tfs$Pi_true, invC, msa$N, msa$q, fnameout = outputfile)))
 
   return(list(msa = msa,
               tfs = tfs,
@@ -75,7 +75,7 @@ dca <- function(inputfile, pseudocount_weight = 0.5, theta = 0.2,
 #in nuc file it excludes all gaps '---' and '...' and 'XXX' where in aa file only '.'.
 #Best thing is to give as input the sequence indices to exclude in seqid parameter.
 #' @export
-return_alignment <- function(inputfile="Y://PFAM2/data/sth/seed/PF00001_v27_seed.sth.aligndprots",
+return_alignment <- function(inputfile="data/PF00074_seed.sth.aligndprots",
                              seqid = 1, nuc = F, fileType = c("fasta", "sth"), doUnique=T) {
   # reads alignment from inputfile, removes inserts and converts into numbers
   cat("return_alignment..\n")
@@ -83,6 +83,7 @@ return_alignment <- function(inputfile="Y://PFAM2/data/sth/seed/PF00001_v27_seed
   attributes(seqid) <- list(type="Reference sequence index")
   if(fileType == "fasta") {
     msa <- read.alignment(inputfile, format = "fasta", forceToLower = F)
+    msa$seq <- toupper(msa$seq)
     cat(sprintf("Original MSA length is: %d.\n", length(msa$seq)))
   } else if(fileType == "sth") {
     msa <- read.stockholm.alignment(inputfile)
@@ -138,15 +139,16 @@ return_alignment <- function(inputfile="Y://PFAM2/data/sth/seed/PF00001_v27_seed
   cat(sprintf("After redundancy (unique) MSA length is: %d.\n", length(msa$seq)))
   cat(sprintf("Ref sequence is %s after removal of duplicates.\n", paste(seqid, collapse = ",")))
   if(nuc == FALSE) {
+    #return(msa)
     tmp <- do.call(rbind, lapply(strsplit((msa$seq), ""), function(x) factor(x, levels = aas)))
-    print(dim(tmp))
+    #print(dim(tmp))
     #return(tmp)
     if(is.null(columnidxs)) {
       if(fileType == "sth") { #excluding only '.' and lower case aas from analysis as defined by HMMER
         excludeidxs <- which(tmp[seqid, ] == 1 | is.na(tmp[seqid, ]))
       } else if(fileType == "fasta") { #exclude gaps of ref sequence from analysis
         excludeidxs <- which(tmp[seqid, ] == 22)
-        print(tmp[seqid,])
+        #print(tmp[seqid,])
       }
       if(length(excludeidxs) > 0)
         tmp <- tmp[, -excludeidxs] #exclude gaps/dots from analysis
@@ -185,6 +187,7 @@ return_alignment <- function(inputfile="Y://PFAM2/data/sth/seed/PF00001_v27_seed
 
   N <- dim(align_full)[2]
   q <- max(align_full)
+  print(align_full[1:12,1:12])
   return(list(N=N, M=M, q=q, Z=align_full, seqid = seqid, raw.msa = msa))
 }
 
@@ -388,7 +391,7 @@ Compute_Results <- function(Pij, Pi, Pij_true, Pi_true, invC, N, q, fnameout = N
 read.stockholm.alignment <- function(file="Y://PFAM2/data/sth/seed/PF00013_v27_seed.sth") {
   mm <- readLines(file)
   mm <- do.call(rbind, strsplit(mm[-grep("^#", mm)], "\\s+", perl = T))
-  mm <- data.frame(name=mm[,1], seq=mm[,2], row.names = mm[,1], stringsAsFactors = F)
+  mm <- data.frame(name=mm[,1], seq=toupper(mm[,2]), row.names = mm[,1], stringsAsFactors = F)
   return(mm)
 }
 
@@ -432,7 +435,7 @@ aas.v2 <- toupper(c("-","A", "C", "D", "E", "F", "G", "H", "I",
                     "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W",
                     "Y", ".", "X"))
 
-codons <-toupper( c("---", "ttt", "ttc", "tta", "ttg", "tct", "tcc", "tca", "tcg", "tat", "tac",
+codons <- toupper(c("---", "ttt", "ttc", "tta", "ttg", "tct", "tcc", "tca", "tcg", "tat", "tac",
                     "taa", "tag", "tgt", "tgc", "tga", "tgg", "ctt", "ctc", "cta",
                     "ctg", "cct", "ccc", "cca", "ccg", "cat", "cac", "caa", "cag",
                     "cgt", "cgc", "cga", "cgg", "att", "atc", "ata", "atg", "act",
