@@ -1,4 +1,6 @@
-# CMA
+# CMA  
+## **C**orrelated **M**utation **A**nalysis
+
 An R package for correlated mutation analysis using both codon and amino acid levels
 
 CMA provides several methods for calculating correlated mutations analysis.
