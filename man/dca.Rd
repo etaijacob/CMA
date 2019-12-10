@@ -4,8 +4,15 @@
 \alias{dca}
 \title{Direct Coupling Analysis (DCA) for amino acid and codon sequences}
 \usage{
-dca(inputfile, pseudocount_weight = 0.5, theta = 0.2, seqid = 1,
-  nuc = F, fileType = "fasta")
+dca(
+  inputfile,
+  pseudocount_weight = 0.5,
+  theta = 0.2,
+  seqid = 1,
+  nuc = F,
+  fileType = "fasta",
+  outputfile = NULL
+)
 }
 \description{
 @param  inputfile file containing the FASTA alignment

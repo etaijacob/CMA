@@ -6,7 +6,7 @@ Date: 2015-09-20
 Author: Etai Jacob
 Maintainer: Who to complain to <etai.jacob@gmail.com>
 Description: An R package for correlated mutation analysis using both codon and amino acid levels. The package consists several different algorithms to perform correlated mutation analysis.
-License: GPL-2
+License: MIT + file LICENSE
 LazyData: TRUE
 Authors@R: person("Etai", "Jacob", email = "etai.jacob@gmail.com",
   role = c("aut", "cre"))
@@ -21,4 +21,4 @@ Collate:
   CMA.R
   aacodonDCA.R
   RcppExports.R
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
