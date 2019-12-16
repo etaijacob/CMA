@@ -1,34 +1,34 @@
 #DCA.R
 #Copyright (C) 2015 Etai Jacob, etai.jacob@gmail.com
 #'
-#'   Direct Coupling Analysis (DCA) for amino acid and codon sequences
+#' \code{dca} Direct Coupling Analysis (DCA) for amino acid and codon sequences
 #'
-#'   @param  inputfile file containing the FASTA alignment
-#'   @param pseudocount_weight - relative weight of pseudo count
-#'   @param theta threshold for sequence id in reweighting
-#'   @param seqid Three options:
+#' @param inputfile file containing the alignment in FASTA format
+#' @param pseudocount_weight relative weight of pseudo count
+#' @param theta threshold for sequence id in reweighting
+#' @param seqid_or_excluded_indices Three options:
 #'                 1) A single numeric value indicates the sequence index in the MSA to use as a reference
 #'                   (1 is the default - An MSA column is either all dot+lower case or dash+upper case,
 #'                    by very definition of the output of HMMer.
 #'                 2) A string indicates the name or id of the sequence in the msa to use as a reference
 #'                 3) A vector of intergers indicates the columns to exclude from analysis
 #'                    (no use of reference sequence in this case).
-#'   @param nuc TRUE for codon based analysis and FALSE (default) for amino acids based analysis.
+#' @param nuc TRUE for codon based analysis and FALSE (default) for amino acids based analysis.
+#' @param fileType input file type
+#' @param outputfile output file name to wrie results
 #'
-#'  @return a list containing data produced in this function and the dca results.
+#' @return a list containing data produced in this function and the dca results.
 #'          The results is composed by N(N-1)/2
 #'          (N = length of the sequences) rows and 4 columns:
 #'          residue i (column 1), residue j (column 2),
 #'          MI(i,j) (Mutual Information between i and j), and
 #'          DI(i,j) (Direct Information between i and j).
 #'          Note: all insert columns are removed from the alignment.
-#'   @seealso \code{\link[MAPDB]}
-#'   @seealso \url{https://github.com/etaijacob/AA2CODON} if you want to generate the input files
 #'
-#' @examples
-#' cma.res <- dca(codon_file_name, seqid = 1, nuc = T, fileType = "fasta")
+#' @seealso \url{https://github.com/etaijacob/AA2CODON} if you want to generate the input files
 #'
-#'  SOME RELEVANT VARIABLES RETURNED:
+#' @details
+#'   SOME RELEVANT VARIABLES RETURNED:
 #'   N        number of residues in each sequence (no insert)
 #'   M        number of sequences in the alignment
 #'   Meff     effective number of sequences after reweighting
@@ -40,13 +40,16 @@
 #'            counts with pseudo counts.
 #'   C        N(q-1) x N(q-1) matrix containing the covariance matrix.
 #'
-#########################################################################
+#' @examples
+#' cma.res <- dca(codon_file_name, seqid = 1, nuc = T, fileType = "fasta")
+#'
 #' @export
 dca <- function(inputfile, pseudocount_weight = 0.5, theta = 0.2,
-                seqid = 1, nuc = F, fileType="fasta", outputfile = NULL) {
+                seqid_or_excluded_indices = 1, nuc = F,
+                fileType="fasta", outputfile = NULL) {
 
   cat("return_alignment.\n")
-  print(system.time(msa <- return_alignment(inputfile, seqid = seqid, nuc = nuc, fileType = fileType)))
+  print(system.time(msa <- return_alignment(inputfile, seqid = seqid_or_excluded_indices, nuc = nuc, fileType = fileType)))
   cat("Compute_True_Frequencies.\n")
   print(system.time(tfs <-  Compute_True_Frequencies(msa$Z, msa$M, msa$N, msa$q, theta)))
   cat(sprintf("### N = %d M = %d Meff = %.2f q = %d\n", msa$N, msa$M, tfs$Meff, msa$q))
@@ -56,7 +59,7 @@ dca <- function(inputfile, pseudocount_weight = 0.5, theta = 0.2,
   print(system.time(C <- Compute_C(pc$Pij, pc$Pi, msa$N, msa$q)))
   cat("InvC.\n")
   #print(system.time(invC <- solve(C)))
-  #inverse via the Choleski decomposition performs faster th
+  #inverse via the Choleski decomposition performs faster than "solve"
   print(system.time(invC <- chol2inv(chol(C))))
   cat("Compute_Results.\n")
   print(system.time(results <- Compute_Results(pc$Pij, pc$Pi, tfs$Pij_true, tfs$Pi_true, invC, msa$N, msa$q, fnameout = outputfile)))
@@ -74,7 +77,6 @@ dca <- function(inputfile, pseudocount_weight = 0.5, theta = 0.2,
 #mind that this function treats aa differently than nuc file:
 #in nuc file it excludes all gaps '---' and '...' and 'XXX' where in aa file only '.'.
 #Best thing is to give as input the sequence indices to exclude in seqid parameter.
-#' @export
 return_alignment <- function(inputfile="data/PF00074_seed.sth.aligndprots",
                              seqid = 1, nuc = F, fileType = c("fasta", "sth"), doUnique=T) {
   # reads alignment from inputfile, removes inserts and converts into numbers
@@ -365,7 +367,7 @@ Compute_Results <- function(Pij, Pi, Pij_true, Pi_true, invC, N, q, fnameout = N
   cat("Compute_Results..\n")
   df <- NULL
 
-  nns <- combn(N, 2)
+  nns <- utils::combn(N, 2)
   df <- do.call(rbind,
                 lapply(1:dim(nns)[2],
                        function(x) {
@@ -378,15 +380,20 @@ Compute_Results <- function(Pij, Pi, Pij_true, Pi_true, invC, N, q, fnameout = N
   cat(sprintf("Results dim: (%d, %d)", dim(df)[1], dim(df)[2]))
   if(!is.null(fnameout)) {
     cat(sprintf("Writing output to file: %s.\n", fnameout))
-    write.table(df, file = fnameout, sep = "\t", row.names = F, quote = F)
+    utils::write.table(df, file = fnameout, sep = "\t", row.names = F, quote = F)
   }
   return(df)
 }
 
 
-#reads a stockholm file format
-# only lines which do not start with a # are considered
-# returns a dataframe with name and seq
+
+#' Reads an sth file
+#'
+#' \code{read.stockholm.alignment} reads a stockholm file format
+#' Only lines which do not start with a # are considered
+#' @param file sth file name
+#' @return a dataframe with name and seq columnns
+#'
 #' @export
 read.stockholm.alignment <- function(file="Y://PFAM2/data/sth/seed/PF00013_v27_seed.sth") {
   mm <- readLines(file)

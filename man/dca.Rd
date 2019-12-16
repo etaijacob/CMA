@@ -2,46 +2,53 @@
 % Please edit documentation in R/DCA.R
 \name{dca}
 \alias{dca}
-\title{Direct Coupling Analysis (DCA) for amino acid and codon sequences}
+\title{\code{dca} Direct Coupling Analysis (DCA) for amino acid and codon sequences}
 \usage{
 dca(
   inputfile,
   pseudocount_weight = 0.5,
   theta = 0.2,
-  seqid = 1,
+  seqid_or_excluded_indices = 1,
   nuc = F,
   fileType = "fasta",
   outputfile = NULL
 )
 }
-\description{
-@param  inputfile file containing the FASTA alignment
-  @param pseudocount_weight - relative weight of pseudo count
-  @param theta threshold for sequence id in reweighting
-  @param seqid Three options:
-                1) A single numeric value indicates the sequence index in the MSA to use as a reference
-                  (1 is the default - An MSA column is either all dot+lower case or dash+upper case,
-                   by very definition of the output of HMMer.
-                2) A string indicates the name or id of the sequence in the msa to use as a reference
-                3) A vector of intergers indicates the columns to exclude from analysis
-                   (no use of reference sequence in this case).
-  @param nuc TRUE for codon based analysis and FALSE (default) for amino acids based analysis.
+\arguments{
+\item{inputfile}{file containing the alignment in FASTA format}
+
+\item{pseudocount_weight}{relative weight of pseudo count}
+
+\item{theta}{threshold for sequence id in reweighting}
+
+\item{seqid_or_excluded_indices}{Three options:
+1) A single numeric value indicates the sequence index in the MSA to use as a reference
+  (1 is the default - An MSA column is either all dot+lower case or dash+upper case,
+   by very definition of the output of HMMer.
+2) A string indicates the name or id of the sequence in the msa to use as a reference
+3) A vector of intergers indicates the columns to exclude from analysis
+   (no use of reference sequence in this case).}
+
+\item{nuc}{TRUE for codon based analysis and FALSE (default) for amino acids based analysis.}
+
+\item{fileType}{input file type}
+
+\item{outputfile}{output file name to wrie results}
 }
-\details{
-@return a list containing data produced in this function and the dca results.
+\value{
+a list containing data produced in this function and the dca results.
          The results is composed by N(N-1)/2
          (N = length of the sequences) rows and 4 columns:
          residue i (column 1), residue j (column 2),
          MI(i,j) (Mutual Information between i and j), and
          DI(i,j) (Direct Information between i and j).
          Note: all insert columns are removed from the alignment.
-  @seealso \code{\link[MAPDB]}
-  @seealso \url{https://github.com/etaijacob/AA2CODON} if you want to generate the input files
 }
-\examples{
-cma.res <- dca(codon_file_name, seqid = 1, nuc = T, fileType = "fasta")
-
- SOME RELEVANT VARIABLES RETURNED:
+\description{
+\code{dca} Direct Coupling Analysis (DCA) for amino acid and codon sequences
+}
+\details{
+SOME RELEVANT VARIABLES RETURNED:
   N        number of residues in each sequence (no insert)
   M        number of sequences in the alignment
   Meff     effective number of sequences after reweighting
@@ -52,5 +59,11 @@ cma.res <- dca(codon_file_name, seqid = 1, nuc = T, fileType = "fasta")
   Pij      N x N x q x q matrix containing the reweighted frequency
            counts with pseudo counts.
   C        N(q-1) x N(q-1) matrix containing the covariance matrix.
+}
+\examples{
+cma.res <- dca(codon_file_name, seqid = 1, nuc = T, fileType = "fasta")
 
+}
+\seealso{
+\url{https://github.com/etaijacob/AA2CODON} if you want to generate the input files
 }

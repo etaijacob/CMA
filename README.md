@@ -13,10 +13,10 @@ in proteins by correlated mutation analysis.
 eLife 2015;10.7554/eLife.08932 http://dx.doi.org/10.7554/eLife.08932.
 
 
-# To install:
+## To install:
 ```
 devtools::install_github("etaijacob/CMA")
 ```
 
-# Notes
+## Notes
 This pacakge code was checked on Mac OS 

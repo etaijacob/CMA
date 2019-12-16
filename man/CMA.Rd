@@ -3,9 +3,11 @@
 \docType{package}
 \name{CMA}
 \alias{CMA}
-\title{CMA: An R package for correlated mutation analysis using both codon and amino acid levels.}
+\title{CMA: **C**orrelated **M**utation **A**nalysis
+An R package for correlated mutation analysis using both codon and amino acid levels}
 \description{
-CMA: An R package for correlated mutation analysis using both codon and amino acid levels.
+CMA: **C**orrelated **M**utation **A**nalysis
+An R package for correlated mutation analysis using both codon and amino acid levels
 }
 \details{
 CMA provides several methods for calculating correlated mutations analysis.

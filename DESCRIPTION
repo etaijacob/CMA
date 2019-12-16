@@ -1,8 +1,8 @@
 Package: CMA
 Type: Package
-Title: An R package for correlated mutation analysis using both codon and amino acid levels.
+Title: An R package for correlated mutation analysis using both codon and amino acid levels
 Version: 0.1.0
-Date: 2015-09-20
+Date: 2019-12-15
 Author: Etai Jacob
 Maintainer: Who to complain to <etai.jacob@gmail.com>
 Description: An R package for correlated mutation analysis using both codon and amino acid levels. The package consists several different algorithms to perform correlated mutation analysis. It include several methods for correlated mutation analysis.
@@ -15,11 +15,15 @@ URL: https://github.com/etaijacob/CMA
 BugReports: https://github.com/etaijacob/CMA/issues
 Imports:
   seqinr,
-  Rcpp
+  Rcpp,
+  utils,
+  reshape2
 LinkingTo: Rcpp
 Collate:
   DCA.R
   CMA.R
-  aacodonDCA.R
+  CMA.exported_functions.R
+  CMA.internal_functions.R
   RcppExports.R
+Depends: R (>= 3.5.0)
 RoxygenNote: 7.0.2
