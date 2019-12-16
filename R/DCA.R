@@ -88,7 +88,7 @@ return_alignment <- function(inputfile="data/PF00074_seed.sth.aligndprots",
     msa$seq <- toupper(msa$seq)
     cat(sprintf("Original MSA length is: %d.\n", length(msa$seq)))
   } else if(fileType == "sth") {
-    msa <- read.stockholm.alignment(inputfile)
+    msa <- read_stockholm_alignment(inputfile)
     cat(sprintf("Original MSA length is: %d.\n", length(msa$seq)))
   }
 
@@ -389,13 +389,13 @@ Compute_Results <- function(Pij, Pi, Pij_true, Pi_true, invC, N, q, fnameout = N
 
 #' Reads an sth file
 #'
-#' \code{read.stockholm.alignment} reads a stockholm file format
+#' \code{read_stockholm_alignment} reads a stockholm file format
 #' Only lines which do not start with a # are considered
 #' @param file sth file name
 #' @return a dataframe with name and seq columnns
 #'
 #' @export
-read.stockholm.alignment <- function(file="Y://PFAM2/data/sth/seed/PF00013_v27_seed.sth") {
+read_stockholm_alignment <- function(file="Y://PFAM2/data/sth/seed/PF00013_v27_seed.sth") {
   mm <- readLines(file)
   mm <- do.call(rbind, strsplit(mm[-grep("^#", mm)], "\\s+", perl = T))
   mm <- data.frame(name=mm[,1], seq=toupper(mm[,2]), row.names = mm[,1], stringsAsFactors = F)

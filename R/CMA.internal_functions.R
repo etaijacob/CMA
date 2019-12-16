@@ -92,7 +92,7 @@ getExcludedIndices.fasta <- function(fasta_file,
 #for sth file only:
 #Exclude '.' and lower case letters
 getExcludedIndices.sth <- function(sth_file, seqnameorindex) {
-  sth <- read.stockholm.alignment(sth_file)
+  sth <- read_stockholm_alignment(sth_file)
   if(is.na(sth[seqnameorindex, "seq"])) {
     cat(sprintf("ERROR - %s is not in %s.\n", seqnameorindex, sth_file))
     return(NA)
